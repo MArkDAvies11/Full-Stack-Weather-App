@@ -3,17 +3,24 @@ import React, { useState } from 'react';
 function Home() {
   const [city, setCity] = useState('');
   const [weather, setWeather] = useState(null);
+  const [forecast, setForecast] = useState(null);
 
   const getWeather = async () => {
     if (!city.trim()) return;
 
     try {
-      const response = await fetch(`http://localhost:5000/api/weather/${city}`);
+      const [weatherResponse, forecastResponse] = await Promise.all([
+        fetch(`http://localhost:5000/api/weather/${city}`),
+        fetch(`http://localhost:5000/api/forecast/${city}`)
+      ]);
       
-      if (!response.ok) throw new Error('City not found');
+      if (!weatherResponse.ok) throw new Error('City not found');
 
-      const weatherData = await response.json();
+      const weatherData = await weatherResponse.json();
+      const forecastData = await forecastResponse.json();
+      
       setWeather(weatherData);
+      setForecast(forecastData);
     } catch (error) {
       alert('City not found. Please try again.');
     }
@@ -48,6 +55,21 @@ function Home() {
               <span>Humidity: {weather.humidity}%</span>
               <span>Wind: {weather.wind_speed} m/s</span>
             </div>
+          </div>
+        </div>
+      )}
+
+      {forecast && (
+        <div className="forecast">
+          <h3>5-Day Forecast</h3>
+          <div className="forecast-cards">
+            {forecast.forecast.map((day, index) => (
+              <div key={index} className="forecast-card">
+                <div className="date">{new Date(day.date).toLocaleDateString('en-US', { weekday: 'short' })}</div>
+                <div className="temp">{day.temperature}°C</div>
+                <div>{day.condition}</div>
+              </div>
+            ))}
           </div>
         </div>
       )}

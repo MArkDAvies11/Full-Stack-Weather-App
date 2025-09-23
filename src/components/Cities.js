@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 function Cities() {
   const [cities, setCities] = useState([]);
   const [weather, setWeather] = useState(null);
+  const [forecast, setForecast] = useState(null);
 
   useEffect(() => {
     fetchCities();
@@ -20,10 +21,16 @@ function Cities() {
 
   const getWeather = async (city) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/weather/${city}`);
-      if (response.ok) {
-        const data = await response.json();
-        setWeather(data);
+      const [weatherResponse, forecastResponse] = await Promise.all([
+        fetch(`http://localhost:5000/api/weather/${city}`),
+        fetch(`http://localhost:5000/api/forecast/${city}`)
+      ]);
+      
+      if (weatherResponse.ok && forecastResponse.ok) {
+        const weatherData = await weatherResponse.json();
+        const forecastData = await forecastResponse.json();
+        setWeather(weatherData);
+        setForecast(forecastData);
       }
     } catch (error) {
       console.error('Error fetching weather:', error);
@@ -51,6 +58,21 @@ function Cities() {
               <span>Humidity: {weather.humidity}%</span>
               <span>Wind: {weather.wind_speed} m/s</span>
             </div>
+          </div>
+        </div>
+      )}
+
+      {forecast && (
+        <div className="forecast">
+          <h3>5-Day Forecast</h3>
+          <div className="forecast-cards">
+            {forecast.forecast.map((day, index) => (
+              <div key={index} className="forecast-card">
+                <div className="date">{new Date(day.date).toLocaleDateString('en-US', { weekday: 'short' })}</div>
+                <div className="temp">{day.temperature}°C</div>
+                <div>{day.condition}</div>
+              </div>
+            ))}
           </div>
         </div>
       )}

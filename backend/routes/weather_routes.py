@@ -42,6 +42,28 @@ def get_weather(city):
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+@weather_bp.route('/api/forecast/<city>', methods=['GET'])
+def get_forecast(city):
+    try:
+        forecast = {
+            'city': city,
+            'forecast': []
+        }
+        
+        for i in range(5):
+            day_forecast = {
+                'day': i + 1,
+                'temperature': round(random.uniform(10, 35), 1),
+                'humidity': random.randint(30, 90),
+                'condition': random.choice(['Sunny', 'Cloudy', 'Rainy', 'Partly Cloudy', 'Windy']),
+                'date': (datetime.utcnow() + __import__('datetime').timedelta(days=i)).strftime('%Y-%m-%d')
+            }
+            forecast['forecast'].append(day_forecast)
+        
+        return jsonify(forecast), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 @weather_bp.route('/api/cities', methods=['GET'])
 def get_cities():
     cities = [
