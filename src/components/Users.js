@@ -11,7 +11,7 @@ function Users() {
 
   const fetchUsers = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/users');
+      const response = await fetch('http://127.0.0.1:5000/api/users');
       const data = await response.json();
       setUsers(data);
     } catch (error) {
@@ -22,8 +22,8 @@ function Users() {
   const handleSubmit = async (values, { resetForm }) => {
     try {
       const url = editingUser 
-        ? `http://localhost:5000/api/users/${editingUser.id}`
-        : 'http://localhost:5000/api/users';
+        ? `http://127.0.0.1:5000/api/users/${editingUser.id}`
+        : 'http://127.0.0.1:5000/api/users';
       
       const method = editingUser ? 'PATCH' : 'POST';
       
@@ -37,15 +37,19 @@ function Users() {
         fetchUsers();
         resetForm();
         setEditingUser(null);
+      } else {
+        const error = await response.json();
+        alert(error.error || 'Error saving user');
       }
     } catch (error) {
       console.error('Error saving user:', error);
+      alert('Error saving user');
     }
   };
 
   const handleDelete = async (userId) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/users/${userId}`, {
+      const response = await fetch(`http://127.0.0.1:5000/api/users/${userId}`, {
         method: 'DELETE'
       });
 
@@ -68,16 +72,21 @@ function Users() {
       />
 
       <div className="users-list">
-        {users.map(user => (
-          <div key={user.id} className="user-card">
-            <h3>{user.username}</h3>
-            <p>{user.email}</p>
-            <div className="user-actions">
-              <button onClick={() => setEditingUser(user)}>Edit</button>
-              <button onClick={() => handleDelete(user.id)}>Delete</button>
+        {users.length === 0 ? (
+          <p style={{color: 'white', textAlign: 'center'}}>No users created yet.</p>
+        ) : (
+          users.map(user => (
+            <div key={user.id} className="user-card">
+              <h3>{user.username}</h3>
+              <p>{user.email}</p>
+              <p>Created: {new Date(user.created_at).toLocaleDateString()}</p>
+              <div className="user-actions">
+                <button onClick={() => setEditingUser(user)}>Edit</button>
+                <button onClick={() => handleDelete(user.id)} className="delete-button">Delete</button>
+              </div>
             </div>
-          </div>
-        ))}
+          ))
+        )}
       </div>
     </div>
   );

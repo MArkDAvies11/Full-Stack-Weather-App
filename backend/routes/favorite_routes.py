@@ -7,7 +7,13 @@ favorite_bp = Blueprint('favorites', __name__)
 def favorites():
     if request.method == 'GET':
         favorites = Favorite.query.all()
-        return jsonify([fav.to_dict() for fav in favorites]), 200
+        favorites_data = []
+        for fav in favorites:
+            fav_dict = fav.to_dict()
+            fav_dict['user'] = fav.user.to_dict() if fav.user else None
+            fav_dict['location'] = fav.location.to_dict() if fav.location else None
+            favorites_data.append(fav_dict)
+        return jsonify(favorites_data), 200
     
     elif request.method == 'POST':
         data = request.get_json()

@@ -10,8 +10,8 @@ function Home() {
 
     try {
       const [weatherResponse, forecastResponse] = await Promise.all([
-        fetch(`http://localhost:5000/api/weather/${city}`),
-        fetch(`http://localhost:5000/api/forecast/${city}`)
+        fetch(`http://127.0.0.1:5000/api/weather/${city}`),
+        fetch(`http://127.0.0.1:5000/api/forecast/${city}`)
       ]);
       
       if (!weatherResponse.ok) throw new Error('City not found');

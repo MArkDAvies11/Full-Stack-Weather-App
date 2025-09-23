@@ -12,7 +12,7 @@ function Favorites() {
 
   const fetchFavorites = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/favorites');
+      const response = await fetch('http://127.0.0.1:5000/api/favorites');
       const data = await response.json();
       setFavorites(data);
     } catch (error) {
@@ -22,7 +22,7 @@ function Favorites() {
 
   const fetchUsers = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/users');
+      const response = await fetch('http://127.0.0.1:5000/api/users');
       const data = await response.json();
       setUsers(data);
     } catch (error) {
@@ -32,7 +32,7 @@ function Favorites() {
 
   const handleSubmit = async (values, { resetForm }) => {
     try {
-      const response = await fetch('http://localhost:5000/api/favorites', {
+      const response = await fetch('http://127.0.0.1:5000/api/favorites', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(values)
@@ -52,7 +52,7 @@ function Favorites() {
 
   const handleDelete = async (favoriteId) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/favorites/${favoriteId}`, {
+      const response = await fetch(`http://127.0.0.1:5000/api/favorites/${favoriteId}`, {
         method: 'DELETE'
       });
 
@@ -74,14 +74,20 @@ function Favorites() {
       />
 
       <div className="favorites-list">
-        {favorites.map(favorite => (
-          <div key={favorite.id} className="favorite-card">
-            <h3>{favorite.city.name}</h3>
-            <p>Added by: {favorite.user.username}</p>
-            <p>Date: {new Date(favorite.created_at).toLocaleDateString()}</p>
-            <button onClick={() => handleDelete(favorite.id)}>Remove</button>
-          </div>
-        ))}
+        {favorites.length === 0 ? (
+          <p>No favorites added yet.</p>
+        ) : (
+          favorites.map(favorite => (
+            <div key={favorite.id} className="favorite-card">
+              <h3>{favorite.location?.name || 'Unknown City'}</h3>
+              <p>Added by: {favorite.user?.username || 'Unknown User'}</p>
+              <p>Date: {new Date(favorite.created_at).toLocaleDateString()}</p>
+              <button onClick={() => handleDelete(favorite.id)} className="delete-button">
+                Remove
+              </button>
+            </div>
+          ))
+        )}
       </div>
     </div>
   );

@@ -11,7 +11,7 @@ function Cities() {
 
   const fetchCities = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/cities');
+      const response = await fetch('http://127.0.0.1:5000/api/cities');
       const data = await response.json();
       setCities(data);
     } catch (error) {
@@ -22,8 +22,8 @@ function Cities() {
   const getWeather = async (city) => {
     try {
       const [weatherResponse, forecastResponse] = await Promise.all([
-        fetch(`http://localhost:5000/api/weather/${city}`),
-        fetch(`http://localhost:5000/api/forecast/${city}`)
+        fetch(`http://127.0.0.1:5000/api/weather/${city}`),
+        fetch(`http://127.0.0.1:5000/api/forecast/${city}`)
       ]);
       
       if (weatherResponse.ok && forecastResponse.ok) {

@@ -12,7 +12,7 @@ def create_app():
     app.config['SECRET_KEY'] = 'weather-app-secret'
     
     db.init_app(app)
-    CORS(app)
+    CORS(app, origins=['http://localhost:3000', 'http://127.0.0.1:3000'])
     
     app.register_blueprint(weather_bp)
     app.register_blueprint(user_bp)
@@ -25,4 +25,4 @@ def create_app():
 
 if __name__ == '__main__':
     app = create_app()
-    app.run(debug=True, port=5000)
+    app.run(debug=True, port=5000, host='127.0.0.1')
