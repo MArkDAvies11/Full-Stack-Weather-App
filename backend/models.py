@@ -6,6 +6,7 @@ db = SQLAlchemy()
 
 class Location(db.Model, SerializerMixin):
     __tablename__ = 'locations'
+    serialize_rules = ('-weather_data', '-favorites')
     
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
@@ -18,6 +19,7 @@ class Location(db.Model, SerializerMixin):
 
 class WeatherData(db.Model, SerializerMixin):
     __tablename__ = 'weather_data'
+    serialize_rules = ('-location',)
     
     id = db.Column(db.Integer, primary_key=True)
     location_id = db.Column(db.Integer, db.ForeignKey('locations.id'), nullable=False)
@@ -31,6 +33,7 @@ class WeatherData(db.Model, SerializerMixin):
 
 class User(db.Model, SerializerMixin):
     __tablename__ = 'users'
+    serialize_rules = ('-favorites',)
     
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
@@ -41,6 +44,7 @@ class User(db.Model, SerializerMixin):
 
 class Favorite(db.Model, SerializerMixin):
     __tablename__ = 'favorites'
+    serialize_rules = ('-user.favorites', '-location.favorites')
     
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
