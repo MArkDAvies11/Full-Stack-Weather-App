@@ -1,7 +1,6 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import random
-import json
 import os
 from datetime import datetime, timedelta
 
@@ -24,45 +23,39 @@ def get_cities():
 
 @app.route('/api/weather/<city>', methods=['GET'])
 def get_weather(city):
-    try:
-        weather = {
-            'name': city,
-            'main': {
-                'temp': round(random.uniform(15, 30), 1),
-                'humidity': random.randint(40, 80)
-            },
-            'weather': [{
-                'description': random.choice(['sunny', 'cloudy', 'partly cloudy', 'light rain'])
-            }],
-            'wind': {
-                'speed': round(random.uniform(2, 15), 1)
-            }
+    weather = {
+        'name': city,
+        'main': {
+            'temp': round(random.uniform(15, 30), 1),
+            'humidity': random.randint(40, 80)
+        },
+        'weather': [{
+            'description': random.choice(['sunny', 'cloudy', 'partly cloudy', 'light rain'])
+        }],
+        'wind': {
+            'speed': round(random.uniform(2, 15), 1)
         }
-        return jsonify(weather), 200
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
+    }
+    return jsonify(weather)
 
 @app.route('/api/forecast/<city>', methods=['GET'])
 def get_forecast(city):
-    try:
-        forecast = {
-            'city': city,
-            'forecast': []
+    forecast = {
+        'city': city,
+        'forecast': []
+    }
+    
+    for i in range(5):
+        day_forecast = {
+            'day': i + 1,
+            'temperature': round(random.uniform(15, 30), 1),
+            'humidity': random.randint(40, 80),
+            'condition': random.choice(['sunny', 'cloudy', 'partly cloudy', 'light rain']),
+            'date': (datetime.utcnow() + timedelta(days=i)).strftime('%Y-%m-%d')
         }
-        
-        for i in range(5):
-            day_forecast = {
-                'day': i + 1,
-                'temperature': round(random.uniform(15, 30), 1),
-                'humidity': random.randint(40, 80),
-                'condition': random.choice(['sunny', 'cloudy', 'partly cloudy', 'light rain']),
-                'date': (datetime.utcnow() + timedelta(days=i)).strftime('%Y-%m-%d')
-            }
-            forecast['forecast'].append(day_forecast)
-        
-        return jsonify(forecast), 200
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        forecast['forecast'].append(day_forecast)
+    
+    return jsonify(forecast)
 
 @app.route('/api/cities', methods=['GET'])
 def cities():
@@ -156,9 +149,5 @@ def delete_favorite(favorite_id):
     favorites_data = [f for f in favorites_data if f['id'] != favorite_id]
     return '', 204
 
-# Vercel serverless function handler
-def handler(request, context):
-    return app
-
-if __name__ == '__main__':
-    app.run(debug=True)
+# Export app for Vercel
+app = app
