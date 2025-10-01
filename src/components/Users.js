@@ -11,7 +11,7 @@ function Users() {
 
   const fetchUsers = async () => {
     try {
-      const response = await fetch('http://127.0.0.1:5000/api/users');
+      const response = await fetch('/api/users');
       const data = await response.json();
       setUsers(data);
     } catch (error) {
@@ -22,8 +22,8 @@ function Users() {
   const handleSubmit = async (values, { resetForm }) => {
     try {
       const url = editingUser 
-        ? `http://127.0.0.1:5000/api/users/${editingUser.id}`
-        : 'http://127.0.0.1:5000/api/users';
+        ? `/api/users/${editingUser.id}`
+        : '/api/users';
       
       const method = editingUser ? 'PATCH' : 'POST';
       
@@ -49,7 +49,7 @@ function Users() {
 
   const handleDelete = async (userId) => {
     try {
-      const response = await fetch(`http://127.0.0.1:5000/api/users/${userId}`, {
+      const response = await fetch(`/api/users/${userId}`, {
         method: 'DELETE'
       });
 

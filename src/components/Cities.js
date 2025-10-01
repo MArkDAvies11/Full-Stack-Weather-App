@@ -11,7 +11,7 @@ function Cities() {
 
   const fetchCities = async () => {
     try {
-      const response = await fetch('http://127.0.0.1:5000/api/cities');
+      const response = await fetch('/api/cities');
       const data = await response.json();
       setCities(data);
     } catch (error) {
@@ -22,8 +22,8 @@ function Cities() {
   const getWeather = async (city) => {
     try {
       const [weatherResponse, forecastResponse] = await Promise.all([
-        fetch(`http://127.0.0.1:5000/api/weather/${city}`),
-        fetch(`http://127.0.0.1:5000/api/forecast/${city}`)
+        fetch(`/api/weather/${city}`),
+        fetch(`/api/forecast/${city}`)
       ]);
       
       if (weatherResponse.ok && forecastResponse.ok) {
@@ -50,13 +50,13 @@ function Cities() {
       
       {weather && (
         <div className="weather-card">
-          <h2>{weather.city}</h2>
+          <h2>{weather.name}</h2>
           <div className="current-weather">
-            <div className="temp">{weather.temperature}°C</div>
-            <div className="description">{weather.condition}</div>
+            <div className="temp">{weather.main.temp}°C</div>
+            <div className="description">{weather.weather[0].description}</div>
             <div className="details">
-              <span>Humidity: {weather.humidity}%</span>
-              <span>Wind: {weather.wind_speed} m/s</span>
+              <span>Humidity: {weather.main.humidity}%</span>
+              <span>Wind: {weather.wind.speed} m/s</span>
             </div>
           </div>
         </div>

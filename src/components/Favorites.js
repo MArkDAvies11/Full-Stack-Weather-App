@@ -12,7 +12,7 @@ function Favorites() {
 
   const fetchFavorites = async () => {
     try {
-      const response = await fetch('http://127.0.0.1:5000/api/favorites');
+      const response = await fetch('/api/favorites');
       const data = await response.json();
       setFavorites(data);
     } catch (error) {
@@ -22,7 +22,7 @@ function Favorites() {
 
   const fetchUsers = async () => {
     try {
-      const response = await fetch('http://127.0.0.1:5000/api/users');
+      const response = await fetch('/api/users');
       const data = await response.json();
       setUsers(data);
     } catch (error) {
@@ -32,7 +32,7 @@ function Favorites() {
 
   const handleSubmit = async (values, { resetForm }) => {
     try {
-      const response = await fetch('http://127.0.0.1:5000/api/favorites', {
+      const response = await fetch('/api/favorites', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(values)
@@ -52,7 +52,7 @@ function Favorites() {
 
   const handleDelete = async (favoriteId) => {
     try {
-      const response = await fetch(`http://127.0.0.1:5000/api/favorites/${favoriteId}`, {
+      const response = await fetch(`/api/favorites/${favoriteId}`, {
         method: 'DELETE'
       });
 
@@ -79,8 +79,8 @@ function Favorites() {
         ) : (
           favorites.map(favorite => (
             <div key={favorite.id} className="favorite-card">
-              <h3>{favorite.location?.name || 'Unknown City'}</h3>
-              <p>Added by: {favorite.user?.username || 'Unknown User'}</p>
+              <h3>{favorite.city_name || 'Unknown City'}</h3>
+              <p>User ID: {favorite.user_id}</p>
               <p>Date: {new Date(favorite.created_at).toLocaleDateString()}</p>
               <button onClick={() => handleDelete(favorite.id)} className="delete-button">
                 Remove

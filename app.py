@@ -12,7 +12,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = 'your-secret-key'
 
 db = SQLAlchemy(app)
-CORS(app)
+CORS(app, origins=['http://localhost:3000', 'http://127.0.0.1:3000'])
 
 # Models
 class User(db.Model, SerializerMixin):
@@ -190,6 +190,31 @@ def delete_favorite(favorite_id):
     db.session.delete(favorite)
     db.session.commit()
     return '', 204
+
+@app.route('/api/forecast/<city_name>', methods=['GET'])
+def get_forecast(city_name):
+    try:
+        import random
+        from datetime import timedelta
+        
+        forecast = {
+            'city': city_name,
+            'forecast': []
+        }
+        
+        for i in range(5):
+            day_forecast = {
+                'day': i + 1,
+                'temperature': round(random.uniform(15, 30), 1),
+                'humidity': random.randint(40, 80),
+                'condition': random.choice(['sunny', 'cloudy', 'partly cloudy', 'light rain']),
+                'date': (datetime.utcnow() + timedelta(days=i)).strftime('%Y-%m-%d')
+            }
+            forecast['forecast'].append(day_forecast)
+        
+        return jsonify(forecast), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 @app.route('/api/cities', methods=['GET'])
 def get_cities():

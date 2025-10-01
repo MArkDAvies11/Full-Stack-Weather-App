@@ -4,14 +4,19 @@ function Home() {
   const [city, setCity] = useState('');
   const [weather, setWeather] = useState(null);
   const [forecast, setForecast] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const getWeather = async () => {
     if (!city.trim()) return;
 
+    setLoading(true);
+    setError(null);
+
     try {
       const [weatherResponse, forecastResponse] = await Promise.all([
-        fetch(`http://127.0.0.1:5000/api/weather/${city}`),
-        fetch(`http://127.0.0.1:5000/api/forecast/${city}`)
+        fetch(`/api/weather/${encodeURIComponent(city)}`),
+        fetch(`/api/forecast/${encodeURIComponent(city)}`)
       ]);
       
       if (!weatherResponse.ok) throw new Error('City not found');
@@ -22,7 +27,11 @@ function Home() {
       setWeather(weatherData);
       setForecast(forecastData);
     } catch (error) {
-      alert('City not found. Please try again.');
+      setError('City not found. Please try again.');
+      setWeather(null);
+      setForecast(null);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -42,18 +51,26 @@ function Home() {
           onKeyPress={handleKeyPress}
           placeholder="Enter city name"
         />
-        <button onClick={getWeather}>Search</button>
+        <button onClick={getWeather} disabled={loading}>
+          {loading ? 'Searching...' : 'Search'}
+        </button>
       </div>
+
+      {error && (
+        <div className="error-message" style={{color: 'red', textAlign: 'center', margin: '20px 0'}}>
+          {error}
+        </div>
+      )}
 
       {weather && (
         <div className="weather-card">
-          <h2>{weather.city}</h2>
+          <h2>{weather.name}</h2>
           <div className="current-weather">
-            <div className="temp">{weather.temperature}°C</div>
-            <div className="description">{weather.condition}</div>
+            <div className="temp">{weather.main.temp}°C</div>
+            <div className="description">{weather.weather[0].description}</div>
             <div className="details">
-              <span>Humidity: {weather.humidity}%</span>
-              <span>Wind: {weather.wind_speed} m/s</span>
+              <span>Humidity: {weather.main.humidity}%</span>
+              <span>Wind: {weather.wind.speed} m/s</span>
             </div>
           </div>
         </div>

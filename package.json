@@ -1,12 +1,11 @@
 {
-  "name": "weather-app",
+  "name": "full-stack-weather-app",
   "version": "1.0.0",
-  "main": "server.js",
+  "description": "Full-Stack Weather App with React and Flask",
   "scripts": {
-    "start": "node server.js",
-    "dev": "nodemon server.js",
     "build": "webpack --mode production",
-    "build-dev": "webpack --mode development"
+    "dev": "webpack --mode development --watch",
+    "vercel-build": "npm run build"
   },
   "dependencies": {
     "react": "^18.2.0",
